@@ -1,0 +1,3 @@
+---
+# defaults file for docker
+docker_log_driver: syslog

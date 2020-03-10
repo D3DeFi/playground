@@ -1,0 +1,17 @@
+- hosts: all
+  roles:
+    - docker
+
+  tasks:
+    - name: Copy an application to destination server
+      copy:
+        src: app/
+        dest: /usr/src/app
+
+    - name: Build a docker image containing the application
+      docker_image:
+        path: /usr/src/app/
+        name: weather
+        tag: dev
+        state: present
+        source: build

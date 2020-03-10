@@ -1,0 +1,6 @@
+---
+# handlers file for docker
+- name: restart docker
+  service:
+    name: '{{ docker_service }}'
+    state: restarted

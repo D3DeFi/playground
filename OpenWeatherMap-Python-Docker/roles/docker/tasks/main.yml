@@ -1,0 +1,41 @@
+---
+# tasks file for docker
+- name: Ensure apt can use HTTPS repositories
+  apt:
+    name: '{{ apt_https_packages }}'
+    state: present
+  vars:
+    apt_https_packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+- name: Import docker repo key
+  apt_key:
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Ensure correct repository for docker-ce is present
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    filename: docker
+    mode: 0644
+    update_cache: yes
+    state: present
+
+- name: Ensure docker packages are installed
+  apt:
+    name: '{{ docker_packages }}'
+    state: present
+
+- name: Configure docker service
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0640
+  notify: restart docker
