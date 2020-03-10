@@ -1,0 +1,8 @@
+env
+*.swp
+*.pyc
+.terraform/
+*.tfstate
+*.tfstate.backup
+terraform.tfvars
+
