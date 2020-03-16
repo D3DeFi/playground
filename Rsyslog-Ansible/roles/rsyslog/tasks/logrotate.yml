@@ -1,0 +1,20 @@
+---
+- name: Check if package shipped script rsyslog-rotate is present
+  stat:
+    path: /usr/lib/rsyslog/rsyslog-rotate
+  register: rsys_rotate_script
+
+- name: Override postrotate command if rsyslog-rotate exists
+  set_fact:
+    rsyslog_rotate_cmd: /usr/lib/rsyslog/rsyslog-rotate
+  when:
+    - rsys_rotate_script.stat.exists
+    - rsys_rotate_script.stat.executable
+
+- name: Ensure logrotate is correctly configured for rsyslog
+  template:
+    src: logrotate-rsyslog.j2
+    dest: /etc/logrotate.d/rsyslog
+    mode: 0644
+    owner: root
+    group: root

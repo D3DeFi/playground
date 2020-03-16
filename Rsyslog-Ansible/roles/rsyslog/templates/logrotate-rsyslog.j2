@@ -1,0 +1,55 @@
+{{ ansible_managed | comment }}
+/var/log/syslog
+{
+    rotate 7
+    daily
+    missingok
+    notifempty
+    delaycompress
+    compress
+    postrotate
+{% if rsyslog_rotate_cmd is defined %}
+        {{ rsyslog_rotate_cmd }}
+{% elif ansible_os_family == "Debian" %}
+        invoke-rc.d {{ rsyslog_service }} rotate > /dev/null
+{% elif ansible_service_mgr == "systemd" %}
+        systemctl kill -s HUP {{ rsyslog_service }}.service
+{% else %}
+        kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+{% endif %}
+    endscript
+}
+
+/var/log/mail.info
+/var/log/mail.warn
+/var/log/mail.err
+/var/log/mail.log
+/var/log/daemon.log
+/var/log/kern.log
+/var/log/auth.log
+/var/log/user.log
+/var/log/lpr.log
+/var/log/cron.log
+/var/log/debug
+/var/log/messages
+{
+    rotate 4
+    weekly
+    missingok
+    notifempty
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+{% if rsyslog_rotate_cmd is defined %}
+        {{ rsyslog_rotate_cmd }}
+{% elif ansible_os_family == "Debian" %}
+        invoke-rc.d {{ rsyslog_service }} rotate > /dev/null
+{% elif ansible_service_mgr == "systemd" %}
+        systemctl kill -s HUP {{ rsyslog_service }}.service
+{% else %}
+        kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+{% endif %}
+    endscript
+}
+
