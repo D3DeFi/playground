@@ -1,38 +1,72 @@
-Role Name
-=========
+Rsyslog
+=======
 
-A brief description of the role goes here.
+Configures rsyslog daemon on the system to log system and custom log messages and forward them to a centralized syslog server.
+
+This role can configure rsyslog to act only as a client when forwarding logs to a remote server.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+None
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+```yaml
+rsyslog_service: rsyslog
+rsyslog_package: rsyslog
+
+# configuration directly related to rsyslog.conf
+# consult the following documentation for any details:
+#  /usr/share/doc/rsyslog-doc/html/rsyslog_conf.html
+rsyslog_modules:
+  - imuxsock  # provides support for local system logging
+  - imklog    # provides kernel logging support
+
+# Enable non-kernel facility klog messages
+rsyslog_klog_permit_nonkernel_facility: on
+
+# Use traditional timestamp format. Leave empty to enable high precision timestamps
+rsyslog_action_file_default_template: RSYSLOG_TraditionalFileFormat
+
+# Filter duplicate messages
+rsyslog_repeated_msg_reduction: on
+
+# Ownership and permissions for all log files
+rsyslog_file_owner: syslog
+rsyslog_file_group: adm
+rsyslog_file_mode: 0640
+rsyslog_dir_mode: 0755
+rsyslog_umask: 0022
+rsyslog_priv_drop_to_user: syslog
+rsyslog_priv_drop_to_group: syslog
+
+# Directory for rsyslog spool and state files
+rsyslog_work_dir: /var/spool/rsyslog
+```
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+        - role: rsyslog
+          rsyslog_server: rsyslog.example.com
+          rsyslog_server_port: 5514
+            
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+@D3DeFi

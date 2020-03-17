@@ -13,24 +13,33 @@
     group: root
     mode: 0755
 
-#- name: Prevent duplicite log messages on Ubuntu distribution
-#  file:
-#    path: /etc/rsyslog.d/{{ item }}
-#    state: absent
-#  with_items:
-#    - 20-ufw.conf
-#    - 50-default.conf
-#  when: ansible_distribution == 'Ubuntu'
-#
-#- name: Upload rsyslog configuration
-#  template:
-#    src: rsyslog.conf.j2
-#    dest: /etc/rsyslog.conf
-#    owner: root
-#    group: root
-#    mode: 0644
-#    validate: '/usr/sbin/rsyslogd -N1 -f %s'
-#  notify: Restart rsyslog
+- name: Ensure rsyslog spool directory exists
+  file:
+    path: '{{ rsyslog_work_dir }}'
+    state: directory
+    owner: syslog
+    group: adm
+    mode: 0700
+
+- name: Upload rsyslog configuration
+  template:
+    src: rsyslog.conf.j2
+    dest: /etc/rsyslog.conf
+    owner: root
+    group: root
+    mode: 0644
+    validate: '/usr/sbin/rsyslogd -N1 -f %s'
+  notify: Restart rsyslog
+
+- name: Upload standard system log configuration
+  template:
+    src: 50-default.conf.j2
+    dest: /etc/rsyslog.d/50-default.conf.j2
+    owner: root
+    group: root
+    mode: 0644
+    validate: '/usr/sbin/rsyslogd -N1 -f %s'
+  notify: Restart rsyslog
 
 - name: Setup rsyslog logrotate
   include_tasks: logrotate.yml
