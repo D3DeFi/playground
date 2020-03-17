@@ -15,9 +15,6 @@
 module(load="{{ module }}")
 {% endfor %}
 
-# Enable non-kernel facility klog messages
-$KLogPermitNonKernelFacility {{ rsyslog_klog_permit_nonkernel_facility }}
-
 ###########################
 #### GLOBAL DIRECTIVES ####
 ###########################

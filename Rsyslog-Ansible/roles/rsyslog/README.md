@@ -14,6 +14,7 @@ Role Variables
 --------------
 
 ```yaml
+# defaults file for rsyslog
 rsyslog_service: rsyslog
 rsyslog_package: rsyslog
 
@@ -24,21 +25,18 @@ rsyslog_modules:
   - imuxsock  # provides support for local system logging
   - imklog    # provides kernel logging support
 
-# Enable non-kernel facility klog messages
-rsyslog_klog_permit_nonkernel_facility: on
-
 # Use traditional timestamp format. Leave empty to enable high precision timestamps
 rsyslog_action_file_default_template: RSYSLOG_TraditionalFileFormat
 
 # Filter duplicate messages
-rsyslog_repeated_msg_reduction: on
+rsyslog_repeated_msg_reduction: 'on'
 
 # Ownership and permissions for all log files
 rsyslog_file_owner: syslog
 rsyslog_file_group: adm
-rsyslog_file_mode: 0640
-rsyslog_dir_mode: 0755
-rsyslog_umask: 0022
+rsyslog_file_mode: '0640'
+rsyslog_dir_mode: '0755'
+rsyslog_umask: '0022'
 rsyslog_priv_drop_to_user: syslog
 rsyslog_priv_drop_to_group: syslog
 
@@ -46,17 +44,24 @@ rsyslog_priv_drop_to_group: syslog
 rsyslog_work_dir: /var/spool/rsyslog
 
 # Forwarding logs to a remote syslog server
-rsyslog_remote_server:
+rsyslog_remote_server: ''
 rsyslog_remote_port: 514
 
 rsyslog_remote_action_queue_type: LinkedList
 rsyslog_remote_action_queue_file: forwardqueue
 rsyslog_remote_resume_interval: 30
 rsyslog_remote_resume_retry_count: -1
-rsyslog_remote_action_queue_save_on_shut: on
-rsyslog_remote_action_resent_last_msg_on_reconnect: on
+rsyslog_remote_action_queue_save_on_shut: 'on'
+rsyslog_remote_action_resent_last_msg_on_reconnect: 'on'
 rsyslog_remote_action_queue_size: 1000000
 rsyslog_remote_action_queue_max_diskspace: 1g
+
+# Custom logging based on the tag
+rsyslog_custom_logs: []
+# Setup like so:
+#rsyslog_custom_logs:
+#  - progname: mytest  # where this is the program name/tag based on which to filter messages
+#    dest: /var/log/mytest.log  # destination for the filtered messages
 ```
 
 Dependencies

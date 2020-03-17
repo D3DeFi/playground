@@ -52,7 +52,23 @@
   notify: Restart rsyslog
   when:
     - rsyslog_remote_server is defined
-    - rsyslog_remote_server|length > 0
+    - rsyslog_remote_server != ""
+
+- name: Configure custom logging
+  template:
+    src: custom-log.conf.j2
+    dest: /etc/rsyslog.d/{{ _rsys_prog_name }}.conf
+    owner: root
+    group: root
+    mode: 0644
+    validate: '/usr/sbin/rsyslogd -N1 -f %s'
+  loop: '{{ rsyslog_custom_logs }}'
+  vars:
+    _rsys_prog_name: '{{ item["progname"] }}'
+    _rsys_log_dest: '{{ item["dest"] }}'
+  notify: Restart rsyslog
+  when:
+    - rsyslog_custom_logs|length > 0
 
 - name: Setup rsyslog logrotate
   include_tasks: logrotate.yml

@@ -18,6 +18,12 @@ To enable log forwarding to a remote syslog server define:
     rsyslog_remote_server: syslog.example.com
     rsyslog_remote_port: 5514  # default 514
 
+To filter custom log messages to a dedicated file, define:
+
+    rsyslog_custom_logs
+      - progname: mytest
+        dest: /var/log/mytest.log
+
 Execution
 ---------
 
