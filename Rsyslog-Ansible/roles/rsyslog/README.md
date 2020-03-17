@@ -44,6 +44,19 @@ rsyslog_priv_drop_to_group: syslog
 
 # Directory for rsyslog spool and state files
 rsyslog_work_dir: /var/spool/rsyslog
+
+# Forwarding logs to a remote syslog server
+rsyslog_remote_server:
+rsyslog_remote_port: 514
+
+rsyslog_remote_action_queue_type: LinkedList
+rsyslog_remote_action_queue_file: forwardqueue
+rsyslog_remote_resume_interval: 30
+rsyslog_remote_resume_retry_count: -1
+rsyslog_remote_action_queue_save_on_shut: on
+rsyslog_remote_action_resent_last_msg_on_reconnect: on
+rsyslog_remote_action_queue_size: 1000000
+rsyslog_remote_action_queue_max_diskspace: 1g
 ```
 
 Dependencies
@@ -57,8 +70,8 @@ Example Playbook
     - hosts: servers
       roles:
         - role: rsyslog
-          rsyslog_server: rsyslog.example.com
-          rsyslog_server_port: 5514
+          rsyslog_remote_server: rsyslog.example.com
+          rsyslog_remote_port: 5514
             
 
 License

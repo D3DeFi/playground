@@ -34,12 +34,25 @@
 - name: Upload standard system log configuration
   template:
     src: 50-default.conf.j2
-    dest: /etc/rsyslog.d/50-default.conf.j2
+    dest: /etc/rsyslog.d/50-default.conf
     owner: root
     group: root
     mode: 0644
     validate: '/usr/sbin/rsyslogd -N1 -f %s'
   notify: Restart rsyslog
+
+- name: Enable remote logging
+  template:
+    src: 60-remote-log.conf.j2
+    dest: /etc/rsyslog.d/60-remote-log.conf
+    owner: root
+    group: root
+    mode: 0644
+    validate: '/usr/sbin/rsyslogd -N1 -f %s'
+  notify: Restart rsyslog
+  when:
+    - rsyslog_remote_server is defined
+    - rsyslog_remote_server|length > 0
 
 - name: Setup rsyslog logrotate
   include_tasks: logrotate.yml

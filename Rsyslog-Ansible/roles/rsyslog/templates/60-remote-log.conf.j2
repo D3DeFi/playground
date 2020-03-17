@@ -1,0 +1,23 @@
+{{ ansible_managed | comment }}
+
+# default location for work (spool) files
+$WorkDirectory /var/log
+
+# use asynchronous processing, enable disk mode
+$ActionQueueType {{ rsyslog_remote_action_queue_type }}
+$ActionQueueFileName {{ rsyslog_remote_action_queue_file }}
+
+# maximum number of messages in queue and disk space limit
+$ActionQueueSize {{ rsyslog_remote_action_queue_size }}
+$ActionQueueMaxDiskSpace {{ rsyslog_remote_action_queue_max_diskspace }}
+
+# prevent message dropping when log server is not responding
+$ActionResumeInterval {{ rsyslog_remote_resume_interval }}
+$ActionResumeRetryCount {{ rsyslog_remote_resume_retry_count }}
+
+# save in-memory data if rsyslog shuts down, resend if log server is available again
+$ActionQueueSaveOnShutdown {{ rsyslog_remote_action_queue_save_on_shut }}
+$ActionSendResendLastMsgOnReconnect {{ rsyslog_remote_action_resent_last_msg_on_reconnect }}
+
+# do remote logging
+*.* @@{{ rsyslog_remote_server }}:{{ rsyslog_remote_port }}
